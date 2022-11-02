@@ -1,6 +1,12 @@
-
+# sdlrs template
+This is just a simple template for getting up and running with sdl in rust
 
 # Building
+
+## Linux
+
+Make sure you have the `libsdl2-dev` package installed on your computer.
+On different package managers this may be named something else, so just search for sdl2
 
 ## MSVC
 Download MSVC development libraries from http://www.libsdl.org/ (SDL2-devel-2.0.x-VC.zip).
