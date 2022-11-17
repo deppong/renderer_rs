@@ -1,15 +1,26 @@
+// crates
 extern crate sdl2;
 
+// sdl
 use sdl2::pixels::PixelFormatEnum;
 use sdl2::pixels::Color;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::sys::SDL_Keycode;
+
+// mine
+use shapes::*;
+use linear_math::*;
+
+pub mod linear_math;
+pub mod shapes;
+
 
 const WIDTH: u32 = 800;
 const HEIGHT: u32 = 800;
 
 fn put_pixel(x: u32, y: u32, color: Color, framedata: &mut Vec<u8>) {
+    if x >= WIDTH || y >= HEIGHT { return; }
+
     framedata[((x + y * WIDTH)*4 + 0) as usize] = color.b;
     framedata[((x + y * WIDTH)*4 + 1) as usize] = color.g;
     framedata[((x + y * WIDTH)*4 + 2) as usize] = color.r;
@@ -20,46 +31,41 @@ fn main() {
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
 
-    let window = video_subsystem.window("sdlrs_template", WIDTH, HEIGHT).position_centered().build().unwrap();
+    let window = video_subsystem.window("Renderer RS", WIDTH, HEIGHT).position_centered().build().unwrap();
 
     let mut canvas = window.into_canvas().build().unwrap();
 
     let texture_creator = canvas.texture_creator();
 
     let mut framebuffer = texture_creator.create_texture_streaming(Some(PixelFormatEnum::ARGB8888), WIDTH, HEIGHT).unwrap();
-    let mut framedata: Vec<u8> = vec![0; ((WIDTH*HEIGHT)*4) as usize];
+    let mut framedata = vec![0; ((WIDTH*HEIGHT)*4) as usize];
 
     canvas.clear();
 
     let mut event_pump = sdl_context.event_pump().unwrap();
-    let mut running = true;
 
-    let mut multiplier: u32 = 128;
+    let mut points = [RPoint{transform: vec3{x: 0.0, y: 0.0, z: 0.0}, color: Color::WHITE}; 5];
 
-    while running {
+    for i in 0..5 {
+        points[i].transform.x = 5.0 *  i as f32;
+        points[i].transform.y = 5.0 * -(i as f32);
+    }
+    
+    'running: loop {
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit {..} |
                 Event::KeyDown { keycode: Some(Keycode::Escape), ..} => {
-                    running = false;
-                    break;
+                    break 'running;
                 },
-                Event::KeyDown { keycode: Some(Keycode::Up),   ..} => { multiplier+=1; break; },
-                Event::KeyDown { keycode: Some(Keycode::Down), ..} => { multiplier-=1; break; },
                 _ => {}
             }
         }
 
-        // edit framedata as you see fit
-        for y in 0..HEIGHT {
-            for x in 0..WIDTH {
-                let r = multiplier * x / WIDTH;
-                let g = multiplier * y / HEIGHT;
-                let b = 0;
-                let color = Color::RGB(r as u8, g as u8, b as u8);
-                put_pixel(x, y, color, &mut framedata);
-            }
+        for i in points {
+            put_pixel(i.transform.x as u32 + WIDTH/2, i.transform.y as u32 + HEIGHT/2, i.color, &mut framedata);
         }
+
 
         canvas.clear();
         framebuffer.update(None, &framedata, (WIDTH*4) as usize).expect("Texture update");
