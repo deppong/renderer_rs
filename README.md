@@ -1,5 +1,5 @@
-# sdlrs template
-This is just a simple template for getting up and running with sdl in rust
+# Renderer_rs
+This is a 3D software renderer written from scratch using just sdl2. Mainly this is meant to be a learning project for me and not meant to be some high-performance software raytracer or something. I will be documenting my entire experience in the doc directory.
 
 # Building
 
