@@ -54,7 +54,9 @@ fn main() {
         points[i].transform.y = 5.0 * -(i as f32);
     }
 
-    let mut line = RLine {x0: 0.0, x1: 80.0, y0: 0.0, y1: 80.0};
+    let line = RLine {x0: -105.5, x1: 80.0, y0: 0.0, y1: 80.0};
+    let line2 = RLine {x0: -300.0, x1: -105.5, y0: 0.0, y1: -200.0};
+    
 
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -70,12 +72,10 @@ fn main() {
             }
         }
 
-        line.x0 += 1.0;
-        line.y0 += 1.0;
-
         framedata = vec![0; ((WIDTH*HEIGHT)*4) as usize];
 
         line.draw(&mut framedata, WIDTH, HEIGHT);
+        line2.draw(&mut framedata, WIDTH, HEIGHT);
 
         canvas.clear();
         framebuffer
