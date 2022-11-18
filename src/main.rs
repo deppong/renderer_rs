@@ -3,14 +3,11 @@ extern crate sdl2;
 
 // sdl
 use sdl2::event::Event;
-use sdl2::mouse::MouseWheelDirection;
-use sdl2::pixels::Color;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::PixelFormatEnum;
 
 // mine
 use linear_math::*;
-use sdl2::sys::{SDL_MouseWheelDirection, SDL_MouseWheelEvent};
 use shapes::*;
 use obj_loader::*;
 
@@ -70,6 +67,7 @@ fn main() {
         let rotation = Mat4f::rotation(rx_angle, ry_angle, rz_angle);
         let scale = Mat4f::scale(zoom, zoom, zoom);
         let translate = Mat4f::translate(trans_x, trans_y, 0.0);
+        let model = rotation*scale*translate;
 
         for event in event_pump.poll_iter() {
             match event {
@@ -105,8 +103,8 @@ fn main() {
 
         for face in &mut loader.faces {
             for j in 0..3 {
-                let v0 = translate * rotation * scale * loader.verts[face[j] as usize];
-                let v1 = translate * rotation * scale * loader.verts[face[(j + 1) % 3] as usize];
+                let v0 = model * loader.verts[face[j] as usize];
+                let v1 = model * loader.verts[face[(j + 1) % 3] as usize];
                 let line = RLine {
                     x0: v0.x,
                     x1: v1.x,
