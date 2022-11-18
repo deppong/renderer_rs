@@ -4,7 +4,7 @@ use std::io::{BufReader, BufRead};
 
 pub struct ObjLoader {
     pub verts: Vec<Vec3f>,
-    pub faces: Vec<[u32; 3]>,
+    pub faces: Vec<[u64; 3]>,
 }
 
 impl ObjLoader {
@@ -31,9 +31,9 @@ impl ObjLoader {
                 },
                 "f" => {
                     self.faces.push([
-                        line_as_vec[1].parse::<u32>().unwrap() - 1, 
-                        line_as_vec[2].parse::<u32>().unwrap() - 1, 
-                        line_as_vec[3].parse::<u32>().unwrap() - 1, 
+                        line_as_vec[1].parse::<u64>().unwrap() - 1, 
+                        line_as_vec[2].parse::<u64>().unwrap() - 1, 
+                        line_as_vec[3].parse::<u64>().unwrap() - 1, 
                     ]);
                 }
                 _ => (),
