@@ -42,9 +42,6 @@ fn main() {
 
     let mut event_pump = sdl_context.event_pump().unwrap();
 
-    let line = RLine {x0: -105.5, x1: 80.0, y0: 0.0, y1: 80.0};
-    let line2 = RLine {x0: -300.0, x1: -105.5, y0: 0.0, y1: -200.0};
-
     let mut loader = ObjLoader::new();
 
     // https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/teapot.obj
@@ -74,14 +71,14 @@ fn main() {
             for j in 0..3 {
                 let v0 = loader.verts[face[j] as usize];
                 let v1 = loader.verts[face[(j + 1) % 3] as usize];
-                let line =  RLine {
-                    x0: v0.x,
-                    x1: v1.x,
-                    y0: v0.y,
-                    y1: v1.y,
+                let line = RLine {
+                    x0: v0.x * 100.,
+                    x1: v1.x * 100.,
+                    y0: v0.y * 100.,
+                    y1: v1.y * 100.,
                 };
-                put_pixel(line.x0 * 100., line.y0 * 100., Color::BLUE, &mut framedata, WIDTH, HEIGHT);
-                put_pixel(line.x1 * 100., line.y1 * 100., Color::RED, &mut framedata, WIDTH, HEIGHT);
+                // put_pixel(line.x0, line.y0, Color::BLUE, &mut framedata, WIDTH, HEIGHT);
+                // put_pixel(line.x1, line.y1, Color::RED, &mut framedata, WIDTH, HEIGHT);
                 line.draw(&mut framedata, WIDTH, HEIGHT);
             }
         }
