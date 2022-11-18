@@ -2,12 +2,13 @@ use super::linear_math::*;
 use sdl2::pixels::Color;
 
 pub fn put_pixel(x: f32, y: f32, color: Color, framedata: &mut Vec<u8>, width: u32, height: u32) {
-    if x >= width as f32 || y >= height as f32 {
-        return;
-    }
 
     let x: u32 = (x + 1. * (width as f32)/2.0) as u32;
     let y: u32 = (y + 1. * (height as f32)/2.0) as u32;
+
+    if x >= width || y >= height {
+        return;
+    }
 
     framedata[((x + y * width) * 4 + 0) as usize] = color.b;
     framedata[((x + y * width) * 4 + 1) as usize] = color.g;

@@ -20,7 +20,26 @@ impl Mat4f {
         }
     }
 
-    pub fn rot_x(angle: f32) -> Mat4f {
+    // Turns out scaling is really easy !
+    pub fn scale(x: f32, y: f32, z: f32) -> Mat4f {
+        Mat4f { 
+            data: [
+                [  x, 0.0, 0.0, 0.0],
+                [0.0,   y, 0.0, 0.0],
+                [0.0, 0.0,   z, 0.0],
+                [0.0, 0.0, 0.0, 1.0]
+            ]
+        }
+    }
+    
+    /*
+        Rotation
+     */
+    pub fn rotation(x: f32, y: f32, z: f32) -> Mat4f {
+        Mat4f::rot_x(x) * Mat4f::rot_y(y) * Mat4f::rot_z(z)
+    }
+
+    fn rot_x(angle: f32) -> Mat4f {
         Mat4f { 
             data: [
                 [1.0, 0.0, 0.0, 0.0],
@@ -31,7 +50,7 @@ impl Mat4f {
         }
     }
 
-    pub fn rot_y(angle: f32) -> Mat4f {
+    fn rot_y(angle: f32) -> Mat4f {
         Mat4f { 
             data: [
                 [angle.cos() , 0.0, angle.sin(), 0.0],
@@ -42,7 +61,7 @@ impl Mat4f {
         }
     }
 
-    pub fn rot_z(angle: f32) -> Mat4f {
+    fn rot_z(angle: f32) -> Mat4f {
         Mat4f { 
             data: [
                 [angle.cos() , -angle.sin(), 0.0,  0.0],
@@ -52,6 +71,7 @@ impl Mat4f {
             ]
         }
     }
+    // --------------------------------------------------
 
 }
 

@@ -3,12 +3,14 @@ extern crate sdl2;
 
 // sdl
 use sdl2::event::Event;
+use sdl2::mouse::MouseWheelDirection;
 use sdl2::pixels::Color;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::PixelFormatEnum;
 
 // mine
 use linear_math::*;
+use sdl2::sys::{SDL_MouseWheelDirection, SDL_MouseWheelEvent};
 use shapes::*;
 use obj_loader::*;
 
@@ -55,25 +57,36 @@ fn main() {
     let mut dy_angle: f32 = 0.00;
     let mut dz_angle: f32 = 0.00;
     
+    let mut zoom: f32 = 10.0;
+    
     'running: loop {
         rx_angle += dx_angle;
         ry_angle += dy_angle;
         rz_angle += dz_angle;
 
-        let rotation = Mat4f::rot_z(rz_angle) * Mat4f::rot_y(ry_angle) * Mat4f::rot_x(rx_angle);
+        let rotation = Mat4f::rotation(rx_angle, ry_angle, rz_angle);
+        let scale = Mat4f::scale(zoom, zoom, zoom);
 
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. }
                 | Event::KeyDown { keycode: Some(Keycode::Escape), ..} => { break 'running; },
-                Event::KeyDown { keycode: Some(Keycode::W), ..} => { dx_angle = 0.05; break; },
-                Event::KeyDown { keycode: Some(Keycode::S), ..} => { dx_angle = -0.05; break; },
-                Event::KeyDown { keycode: Some(Keycode::A), ..} => { dy_angle = -0.05; break; },
-                Event::KeyDown { keycode: Some(Keycode::D), ..} => { dy_angle = 0.05; break; },
+                Event::KeyDown { keycode: Some(Keycode::W), ..} => { dx_angle = 0.02; break; },
+                Event::KeyDown { keycode: Some(Keycode::S), ..} => { dx_angle = -0.02; break; },
+                Event::KeyDown { keycode: Some(Keycode::A), ..} => { dy_angle = -0.02; break; },
+                Event::KeyDown { keycode: Some(Keycode::D), ..} => { dy_angle = 0.02; break; },
                 Event::KeyUp { .. } => {
                     dx_angle = 0.0;
                     dy_angle = 0.0;
                     dz_angle = 0.0;
+                },
+
+                Event::MouseWheel { y, ..} => {
+                    if y > 0 {
+                        zoom += 1.0; 
+                    } else if y < 0 {
+                        zoom -= 1.0; 
+                    }
                 },
                 _ => {}
             }
@@ -83,13 +96,13 @@ fn main() {
 
         for face in &mut loader.faces {
             for j in 0..3 {
-                let v0 = rotation * loader.verts[face[j] as usize];
-                let v1 = rotation * loader.verts[face[(j + 1) % 3] as usize];
+                let v0 = rotation * scale * loader.verts[face[j] as usize];
+                let v1 = rotation * scale * loader.verts[face[(j + 1) % 3] as usize];
                 let line = RLine {
-                    x0: v0.x * 50.,
-                    x1: v1.x * 50.,
-                    y0: v0.y * 50.,
-                    y1: v1.y * 50.,
+                    x0: v0.x,
+                    x1: v1.x,
+                    y0: v0.y,
+                    y1: v1.y,
                 };
                 line.draw(&mut framedata, WIDTH, HEIGHT);
             }
