@@ -56,9 +56,12 @@ fn main() {
     let mut dx_angle: f32 = 0.00;
     let mut dy_angle: f32 = 0.00;
     let mut dz_angle: f32 = 0.00;
+
+    let mut trans_x: f32 = 0.0;
+    let mut trans_y: f32 = 0.0;
     
     let mut zoom: f32 = 10.0;
-    
+
     'running: loop {
         rx_angle += dx_angle;
         ry_angle += dy_angle;
@@ -66,15 +69,21 @@ fn main() {
 
         let rotation = Mat4f::rotation(rx_angle, ry_angle, rz_angle);
         let scale = Mat4f::scale(zoom, zoom, zoom);
+        let translate = Mat4f::translate(trans_x, trans_y, 0.0);
 
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. }
                 | Event::KeyDown { keycode: Some(Keycode::Escape), ..} => { break 'running; },
-                Event::KeyDown { keycode: Some(Keycode::W), ..} => { dx_angle = 0.02; break; },
-                Event::KeyDown { keycode: Some(Keycode::S), ..} => { dx_angle = -0.02; break; },
-                Event::KeyDown { keycode: Some(Keycode::A), ..} => { dy_angle = -0.02; break; },
-                Event::KeyDown { keycode: Some(Keycode::D), ..} => { dy_angle = 0.02; break; },
+                Event::KeyDown { keycode: Some(Keycode::W), ..} => { dx_angle = -0.02; break; },
+                Event::KeyDown { keycode: Some(Keycode::S), ..} => { dx_angle = 0.02; break; },
+                Event::KeyDown { keycode: Some(Keycode::A), ..} => { dy_angle = 0.02; break; },
+                Event::KeyDown { keycode: Some(Keycode::D), ..} => { dy_angle = -0.02; break; },
+                Event::KeyDown { keycode: Some(Keycode::Up), ..}    => { trans_y += -1.0; break; },
+                Event::KeyDown { keycode: Some(Keycode::Down), ..}  => { trans_y += 1.0; break; },
+                Event::KeyDown { keycode: Some(Keycode::Left), ..}  => { trans_x += -1.0; break; },
+                Event::KeyDown { keycode: Some(Keycode::Right), ..} => { trans_x += 1.0; break; },
+
                 Event::KeyUp { .. } => {
                     dx_angle = 0.0;
                     dy_angle = 0.0;
@@ -96,8 +105,8 @@ fn main() {
 
         for face in &mut loader.faces {
             for j in 0..3 {
-                let v0 = rotation * scale * loader.verts[face[j] as usize];
-                let v1 = rotation * scale * loader.verts[face[(j + 1) % 3] as usize];
+                let v0 = translate * rotation * scale * loader.verts[face[j] as usize];
+                let v1 = translate * rotation * scale * loader.verts[face[(j + 1) % 3] as usize];
                 let line = RLine {
                     x0: v0.x,
                     x1: v1.x,

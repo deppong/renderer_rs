@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::{BufReader, BufRead};
 
 pub struct ObjLoader {
-    pub verts: Vec<Vec3f>,
+    pub verts: Vec<Vec4f>,
     pub faces: Vec<[u64; 3]>,
 }
 
@@ -23,10 +23,11 @@ impl ObjLoader {
             match line_as_vec[0] {
                 // if the line is a vertex
                 "v" => {
-                    self.verts.push(Vec3f {
+                    self.verts.push(Vec4f {
                         x: -line_as_vec[1].parse::<f32>().unwrap(),
                         y: -line_as_vec[2].parse::<f32>().unwrap(),
                         z: -line_as_vec[3].parse::<f32>().unwrap(),
+                        w: 1.0,
                     })
                 },
                 "f" => {

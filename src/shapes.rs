@@ -18,7 +18,7 @@ pub fn put_pixel(x: f32, y: f32, color: Color, framedata: &mut Vec<u8>, width: u
 
 #[derive(Clone, Copy)]
 pub struct RPoint {
-    pub transform: Vec3f,
+    pub transform: Vec4f,
     pub color: Color,
 }
 

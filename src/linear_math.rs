@@ -2,10 +2,11 @@ use std::ops;
 
 // Simple vector 3 for matrix stuff
 #[derive(Clone, Copy, Debug)]
-pub struct Vec3f {
+pub struct Vec4f {
     pub x: f32,
     pub y: f32,
     pub z: f32,
+    pub w: f32,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -17,6 +18,17 @@ impl Mat4f {
     pub fn new() -> Mat4f {
         Mat4f { 
             data: [[0.0; 4]; 4]
+        }
+    }
+
+    pub fn translate(x: f32, y: f32, z: f32) -> Mat4f {
+        Mat4f { 
+            data: [
+                [1.0, 0.0, 0.0,   x],
+                [0.0, 1.0, 0.0,   y],
+                [0.0, 0.0, 1.0,   z],
+                [0.0, 0.0, 0.0, 1.0]
+            ]
         }
     }
 
@@ -45,7 +57,7 @@ impl Mat4f {
                 [1.0, 0.0, 0.0, 0.0],
                 [0.0, angle.cos(), -angle.sin(), 0.0],
                 [0.0, angle.sin(), angle.cos(), 0.0],
-                [0.0, 0.0, 0.0, 0.0]
+                [0.0, 0.0, 0.0, 1.0]
             ]
         }
     }
@@ -56,7 +68,7 @@ impl Mat4f {
                 [angle.cos() , 0.0, angle.sin(), 0.0],
                 [0.0, 1.0, 0.0, 0.0],
                 [-angle.sin(), 0.0, angle.cos(), 0.0],
-                [0.0, 0.0, 0.0, 0.0]
+                [0.0, 0.0, 0.0, 1.0]
             ]
         }
     }
@@ -67,7 +79,7 @@ impl Mat4f {
                 [angle.cos() , -angle.sin(), 0.0,  0.0],
                 [angle.sin(), angle.cos(), 0.0, 0.0],
                 [0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 0.0, 0.0]
+                [0.0, 0.0, 0.0, 1.0]
             ]
         }
     }
@@ -76,14 +88,15 @@ impl Mat4f {
 }
 
 
-impl ops::Mul<Vec3f> for Mat4f {
-    type Output = Vec3f;
+impl ops::Mul<Vec4f> for Mat4f {
+    type Output = Vec4f;
 
-    fn mul(self, other: Vec3f) -> Vec3f {
-        Vec3f { 
-            x: self.data[0][0]*other.x + self.data[0][1]*other.y + self.data[0][2]*other.z,
-            y: self.data[1][0]*other.x + self.data[1][1]*other.y + self.data[1][2]*other.z,
-            z: self.data[2][0]*other.x + self.data[2][1]*other.y + self.data[2][2]*other.z,
+    fn mul(self, other: Vec4f) -> Vec4f {
+        Vec4f { 
+            x: self.data[0][0]*other.x + self.data[0][1]*other.y + self.data[0][2]*other.z + self.data[0][3]*other.w,
+            y: self.data[1][0]*other.x + self.data[1][1]*other.y + self.data[1][2]*other.z + self.data[1][3]*other.w,
+            z: self.data[2][0]*other.x + self.data[2][1]*other.y + self.data[2][2]*other.z + self.data[2][3]*other.w,
+            w: self.data[3][0]*other.x + self.data[3][1]*other.y + self.data[3][2]*other.z + self.data[3][3]*other.w,
         }
     }
 }
