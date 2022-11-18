@@ -19,6 +19,7 @@ impl Mat4f {
             data: [[0.0; 4]; 4]
         }
     }
+
     pub fn rot_x(angle: f32) -> Mat4f {
         Mat4f { 
             data: [
@@ -40,6 +41,18 @@ impl Mat4f {
             ]
         }
     }
+
+    pub fn rot_z(angle: f32) -> Mat4f {
+        Mat4f { 
+            data: [
+                [angle.cos() , -angle.sin(), 0.0,  0.0],
+                [angle.sin(), angle.cos(), 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
+                [0.0, 0.0, 0.0, 0.0]
+            ]
+        }
+    }
+
 }
 
 
@@ -62,7 +75,9 @@ impl ops::Mul<Mat4f> for Mat4f {
         let mut out = Mat4f::new();
         for i in 0..self.data.len() {
             for j in 0..other.data.len() {
-                out.data[i][j] += self.data[i][j] * other.data[i][j];
+                for k in 0..4 {
+                    out.data[i][j] += self.data[i][k] * other.data[k][j];
+                }
             }
         }
         

@@ -47,22 +47,34 @@ fn main() {
     // https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/teapot.obj
     loader.load_file("cow.obj".to_string());
 
-    let mut angle: f32 = 0.01;
+    let mut rx_angle: f32 = 0.00;
+    let mut ry_angle: f32 = 0.00;
+    let mut rz_angle: f32 = 0.00;
+
+    let mut dx_angle: f32 = 0.00;
+    let mut dy_angle: f32 = 0.00;
+    let mut dz_angle: f32 = 0.00;
     
     'running: loop {
-        angle += 0.01;
-        let rotation_x = Mat4f::rot_x(angle);
-        let rotation_y = Mat4f::rot_y(angle);
+        rx_angle += dx_angle;
+        ry_angle += dy_angle;
+        rz_angle += dz_angle;
+
+        let rotation = Mat4f::rot_z(rz_angle) * Mat4f::rot_y(ry_angle) * Mat4f::rot_x(rx_angle);
 
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. }
-                | Event::KeyDown {
-                    keycode: Some(Keycode::Escape),
-                    ..
-                } => {
-                    break 'running;
-                }
+                | Event::KeyDown { keycode: Some(Keycode::Escape), ..} => { break 'running; },
+                Event::KeyDown { keycode: Some(Keycode::W), ..} => { dx_angle = 0.05; break; },
+                Event::KeyDown { keycode: Some(Keycode::S), ..} => { dx_angle = -0.05; break; },
+                Event::KeyDown { keycode: Some(Keycode::A), ..} => { dy_angle = -0.05; break; },
+                Event::KeyDown { keycode: Some(Keycode::D), ..} => { dy_angle = 0.05; break; },
+                Event::KeyUp { .. } => {
+                    dx_angle = 0.0;
+                    dy_angle = 0.0;
+                    dz_angle = 0.0;
+                },
                 _ => {}
             }
         }
@@ -71,8 +83,8 @@ fn main() {
 
         for face in &mut loader.faces {
             for j in 0..3 {
-                let v0 = rotation_x * rotation_y * loader.verts[face[j] as usize];
-                let v1 = rotation_x * rotation_y * loader.verts[face[(j + 1) % 3] as usize];
+                let v0 = rotation * loader.verts[face[j] as usize];
+                let v1 = rotation * loader.verts[face[(j + 1) % 3] as usize];
                 let line = RLine {
                     x0: v0.x * 50.,
                     x1: v1.x * 50.,
