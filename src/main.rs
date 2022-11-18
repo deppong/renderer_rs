@@ -71,10 +71,8 @@ fn main() {
 
         for face in &mut loader.faces {
             for j in 0..3 {
-                let v0 = rotation_y * loader.verts[face[j] as usize];
-                let v1 = rotation_y * loader.verts[face[(j + 1) % 3] as usize];
-                let v0 = rotation_x * v0;
-                let v1 = rotation_x * v1;
+                let v0 = rotation_x * rotation_y * loader.verts[face[j] as usize];
+                let v1 = rotation_x * rotation_y * loader.verts[face[(j + 1) % 3] as usize];
                 let line = RLine {
                     x0: v0.x * 50.,
                     x1: v1.x * 50.,

@@ -14,6 +14,11 @@ pub struct Mat4f {
 }
 
 impl Mat4f {
+    pub fn new() -> Mat4f {
+        Mat4f { 
+            data: [[0.0; 4]; 4]
+        }
+    }
     pub fn rot_x(angle: f32) -> Mat4f {
         Mat4f { 
             data: [
@@ -47,5 +52,20 @@ impl ops::Mul<Vec3f> for Mat4f {
             y: self.data[1][0]*other.x + self.data[1][1]*other.y + self.data[1][2]*other.z,
             z: self.data[2][0]*other.x + self.data[2][1]*other.y + self.data[2][2]*other.z,
         }
+    }
+}
+
+impl ops::Mul<Mat4f> for Mat4f {
+    type Output = Mat4f;
+
+    fn mul(self, other: Mat4f) -> Mat4f {
+        let mut out = Mat4f::new();
+        for i in 0..self.data.len() {
+            for j in 0..other.data.len() {
+                out.data[i][j] += self.data[i][j] * other.data[i][j];
+            }
+        }
+        
+        out
     }
 }
