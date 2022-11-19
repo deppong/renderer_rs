@@ -73,10 +73,12 @@ fn main() {
             match event {
                 Event::Quit { .. }
                 | Event::KeyDown { keycode: Some(Keycode::Escape), ..} => { break 'running; },
+
                 Event::KeyDown { keycode: Some(Keycode::W), ..} => { dx_angle = -0.02; break; },
                 Event::KeyDown { keycode: Some(Keycode::S), ..} => { dx_angle = 0.02; break; },
                 Event::KeyDown { keycode: Some(Keycode::A), ..} => { dy_angle = 0.02; break; },
                 Event::KeyDown { keycode: Some(Keycode::D), ..} => { dy_angle = -0.02; break; },
+
                 Event::KeyDown { keycode: Some(Keycode::Up), ..}    => { trans_y += -1.0; break; },
                 Event::KeyDown { keycode: Some(Keycode::Down), ..}  => { trans_y += 1.0; break; },
                 Event::KeyDown { keycode: Some(Keycode::Left), ..}  => { trans_x += -1.0; break; },

@@ -9,6 +9,26 @@ pub struct Vec4f {
     pub w: f32,
 }
 
+impl Vec4f {
+    pub fn cross(lhs: Vec4f, rhs: Vec4f) -> Vec4f {
+        Vec4f { 
+            x: lhs.y*rhs.z - lhs.z*rhs.y, 
+            y: lhs.z*rhs.x - lhs.x*rhs.z, 
+            z: lhs.x*rhs.y - lhs.y*rhs.x, 
+            w: 1.0 
+        }
+    }
+
+    pub fn normalize(&mut self) {
+        let magnitude = (self.x*self.x + self.y*self.y + self.z*self.z).sqrt();
+        if magnitude > 0.0 {
+            self.x = self.x / magnitude;
+            self.y = self.y / magnitude;
+            self.z = self.z / magnitude;
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug)]
 pub struct Mat4f {
     pub data: [[f32; 4]; 4],
@@ -18,6 +38,17 @@ impl Mat4f {
     pub fn new() -> Mat4f {
         Mat4f { 
             data: [[0.0; 4]; 4]
+        }
+    }
+
+    pub fn identity() -> Mat4f {
+        Mat4f { 
+            data: [
+                [1.0, 0.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0]
+            ]
         }
     }
 
