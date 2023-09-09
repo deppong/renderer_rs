@@ -128,6 +128,7 @@ impl Triangle {
             self.v0 = oldself.v1;
             self.v1 = v3;
             self.v2 = oldself.v2;
+            self.flat_top_tri(framedata, width, height)
         }
         
     }
@@ -149,8 +150,8 @@ impl Triangle {
                     color: Color::RED 
             };
             line.draw(framedata, width, height);
-            x1-=slope1;
-            x2-=slope2;
+            x1+=slope1;
+            x2+=slope2;
             y+=1.0;
         }
     }

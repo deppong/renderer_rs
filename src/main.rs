@@ -44,7 +44,7 @@ fn main() {
     let mut loader = ObjLoader::new();
 
     // https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/teapot.obj
-    loader.load_file("teddy.obj".to_string());
+    loader.load_file("cow.obj".to_string());
 
     let mut rx_angle: f32 = 0.00;
     let mut ry_angle: f32 = 0.00;
