@@ -1,6 +1,8 @@
 // crates
 extern crate sdl2;
 
+use rand::prelude::*;
+
 // sdl
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -125,7 +127,8 @@ fn main() {
                 v1: Point{  x: v1.x, y: v1.y},
                 v2: Point{  x: v2.x, y: v2.y},
             };
-            tri.draw(&mut framedata, WIDTH, HEIGHT);
+
+            tri.draw(&mut framedata, WIDTH, HEIGHT, Color::WHITE);
 
         }
 

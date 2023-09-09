@@ -107,15 +107,15 @@ impl RLine {
 impl Triangle {
     // Algorithm mostly stolen from here (Great article btw)
     // http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html#sunbresenhamarticle
-    pub fn draw(&mut self, framedata: &mut Vec<u8>, width: u32, height: u32) {
+    pub fn draw(&mut self, framedata: &mut Vec<u8>, width: u32, height: u32, color: Color) {
         if self.v0.y > self.v1.y {std::mem::swap(&mut self.v0, &mut self.v1)}
         if self.v0.y > self.v2.y {std::mem::swap(&mut self.v0, &mut self.v2)}
         if self.v1.y > self.v2.y {std::mem::swap(&mut self.v1, &mut self.v2)}
 
         if self.v1.y == self.v2.y {
-            self.flat_bot_tri(framedata, width, height)
+            self.flat_bot_tri(framedata, width, height, color);
         } else if self.v0.y == self.v1.y {
-            self.flat_top_tri(framedata, width, height)
+            self.flat_top_tri(framedata, width, height, color);
         } else {
             let v3 = Point {
                 x: self.v0.x + ((self.v1.y - self.v0.y)/(self.v2.y - self.v0.y)) * (self.v2.x - self.v0.x),
@@ -123,17 +123,17 @@ impl Triangle {
             };
             let oldself = self.clone();
             self.v2 = v3;
-            self.flat_bot_tri(framedata, width, height);
+            self.flat_bot_tri(framedata, width, height, color);
 
             self.v0 = oldself.v1;
             self.v1 = v3;
             self.v2 = oldself.v2;
-            self.flat_top_tri(framedata, width, height)
+            self.flat_top_tri(framedata, width, height, color);
         }
         
     }
 
-    fn flat_bot_tri(&self, framedata: &mut Vec<u8>, width: u32, height: u32) {
+    fn flat_bot_tri(&self, framedata: &mut Vec<u8>, width: u32, height: u32, color: Color) {
         let slope1 = (self.v1.x - self.v0.x) / (self.v1.y - self.v0.y);
         let slope2 = (self.v2.x - self.v0.x) / (self.v2.y - self.v0.y);
 
@@ -147,7 +147,7 @@ impl Triangle {
                     x1: x2,
                     y0: y,
                     y1: y,
-                    color: Color::RED 
+                    color: color
             };
             line.draw(framedata, width, height);
             x1+=slope1;
@@ -156,7 +156,7 @@ impl Triangle {
         }
     }
 
-    fn flat_top_tri(&self, framedata: &mut Vec<u8>, width: u32, height: u32) {
+    fn flat_top_tri(&self, framedata: &mut Vec<u8>, width: u32, height: u32, color: Color) {
         let slope1 = (self.v2.x - self.v0.x) / (self.v2.y - self.v0.y);
         let slope2 = (self.v2.x - self.v1.x) / (self.v2.y - self.v1.y);
 
@@ -170,7 +170,7 @@ impl Triangle {
                     x1: x2,
                     y0: y,
                     y1: y,
-                    color: Color::RED 
+                    color: color
             };
             line.draw(framedata, width, height);
             x1-=slope1;
