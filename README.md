@@ -1,7 +1,7 @@
 # Renderer_rs
 This is a 3D software renderer written from scratch using just sdl2. Mainly this is meant to be a learning project for me and not meant to be some high-performance software raytracer or something. I will be documenting my entire experience in the doc directory.
 
-(cow_renderer.png)[cow_render.png]
+[cow_render.png](cow_renderer.png)
 
 # Building
 
