@@ -37,7 +37,8 @@ fn main() {
     let mut framebuffer = texture_creator
         .create_texture_streaming(Some(PixelFormatEnum::ARGB8888), WIDTH, HEIGHT)
         .unwrap();
-    let mut framedata: Vec<u8>;
+    let mut framedata: Vec<u8> = vec![0; ((WIDTH*HEIGHT)*4) as usize];
+    let mut prev_framedata: Vec<u8> = vec![1; ((WIDTH*HEIGHT)*4) as usize];
 
     canvas.clear();
 
@@ -61,6 +62,8 @@ fn main() {
     
     let mut zoom: f32 = 10.0;
 
+    let mut rng = rand::thread_rng();
+
     'running: loop {
         rx_angle += dx_angle;
         ry_angle += dy_angle;
@@ -80,6 +83,9 @@ fn main() {
                 Event::KeyDown { keycode: Some(Keycode::S), ..} => { dx_angle = 0.02; break; },
                 Event::KeyDown { keycode: Some(Keycode::A), ..} => { dy_angle = 0.02; break; },
                 Event::KeyDown { keycode: Some(Keycode::D), ..} => { dy_angle = -0.02; break; },
+
+                Event::KeyDown { keycode: Some(Keycode::Q), ..} => { dz_angle = -0.02; break; },
+                Event::KeyDown { keycode: Some(Keycode::E), ..} => { dz_angle =  0.02; break; },
 
                 Event::KeyDown { keycode: Some(Keycode::Up), ..}    => { trans_y += -1.0; break; },
                 Event::KeyDown { keycode: Some(Keycode::Down), ..}  => { trans_y += 1.0; break; },
@@ -102,6 +108,7 @@ fn main() {
                 _ => {}
             }
         }
+
 
         framedata = vec![0; ((WIDTH*HEIGHT)*4) as usize];
 
@@ -132,11 +139,14 @@ fn main() {
 
         }
 
-        canvas.clear();
-        framebuffer
-            .update(None, &framedata, (WIDTH * 4) as usize)
-            .expect("Texture update");
-        canvas.copy(&framebuffer, None, None).expect("oops");
-        canvas.present();
+        if prev_framedata != framedata {
+            prev_framedata = framedata.clone();
+            canvas.clear();
+            framebuffer
+                .update(None, &framedata, (WIDTH * 4) as usize)
+                .expect("Texture update");
+            canvas.copy(&framebuffer, None, None).expect("oops");
+            canvas.present();
+        }
     }
 }

@@ -11,16 +11,16 @@ pub struct Vec4f {
 
 impl Vec4f {
     pub fn cross(lhs: Vec4f, rhs: Vec4f) -> Vec4f {
-        Vec4f { 
-            x: lhs.y*rhs.z - lhs.z*rhs.y, 
-            y: lhs.z*rhs.x - lhs.x*rhs.z, 
-            z: lhs.x*rhs.y - lhs.y*rhs.x, 
-            w: 1.0 
+        Vec4f {
+            x: lhs.y * rhs.z - lhs.z * rhs.y,
+            y: lhs.z * rhs.x - lhs.x * rhs.z,
+            z: lhs.x * rhs.y - lhs.y * rhs.x,
+            w: 1.0,
         }
     }
 
     pub fn normalize(&mut self) {
-        let magnitude = (self.x*self.x + self.y*self.y + self.z*self.z).sqrt();
+        let magnitude = (self.x * self.x + self.y * self.y + self.z * self.z).sqrt();
         if magnitude > 0.0 {
             self.x = self.x / magnitude;
             self.y = self.y / magnitude;
@@ -36,98 +36,108 @@ pub struct Mat4f {
 
 impl Mat4f {
     pub fn new() -> Mat4f {
-        Mat4f { 
-            data: [[0.0; 4]; 4]
+        Mat4f {
+            data: [[0.0; 4]; 4],
         }
     }
 
     pub fn identity() -> Mat4f {
-        Mat4f { 
+        Mat4f {
             data: [
                 [1.0, 0.0, 0.0, 0.0],
                 [0.0, 1.0, 0.0, 0.0],
                 [0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 0.0, 1.0]
-            ]
+                [0.0, 0.0, 0.0, 1.0],
+            ],
         }
     }
 
     pub fn translate(x: f32, y: f32, z: f32) -> Mat4f {
-        Mat4f { 
+        Mat4f {
             data: [
-                [1.0, 0.0, 0.0,   x],
-                [0.0, 1.0, 0.0,   y],
-                [0.0, 0.0, 1.0,   z],
-                [0.0, 0.0, 0.0, 1.0]
-            ]
+                [1.0, 0.0, 0.0, x],
+                [0.0, 1.0, 0.0, y],
+                [0.0, 0.0, 1.0, z],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
         }
     }
 
     // Turns out scaling is really easy !
     pub fn scale(x: f32, y: f32, z: f32) -> Mat4f {
-        Mat4f { 
+        Mat4f {
             data: [
-                [  x, 0.0, 0.0, 0.0],
-                [0.0,   y, 0.0, 0.0],
-                [0.0, 0.0,   z, 0.0],
-                [0.0, 0.0, 0.0, 1.0]
-            ]
+                [x, 0.0, 0.0, 0.0],
+                [0.0, y, 0.0, 0.0],
+                [0.0, 0.0, z, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
         }
     }
-    
+
     /*
-        Rotation
-     */
+       Rotation
+    */
     pub fn rotation(x: f32, y: f32, z: f32) -> Mat4f {
         Mat4f::rot_x(x) * Mat4f::rot_y(y) * Mat4f::rot_z(z)
     }
 
     fn rot_x(angle: f32) -> Mat4f {
-        Mat4f { 
+        Mat4f {
             data: [
                 [1.0, 0.0, 0.0, 0.0],
                 [0.0, angle.cos(), -angle.sin(), 0.0],
                 [0.0, angle.sin(), angle.cos(), 0.0],
-                [0.0, 0.0, 0.0, 1.0]
-            ]
+                [0.0, 0.0, 0.0, 1.0],
+            ],
         }
     }
 
     fn rot_y(angle: f32) -> Mat4f {
-        Mat4f { 
+        Mat4f {
             data: [
-                [angle.cos() , 0.0, angle.sin(), 0.0],
+                [angle.cos(), 0.0, angle.sin(), 0.0],
                 [0.0, 1.0, 0.0, 0.0],
                 [-angle.sin(), 0.0, angle.cos(), 0.0],
-                [0.0, 0.0, 0.0, 1.0]
-            ]
+                [0.0, 0.0, 0.0, 1.0],
+            ],
         }
     }
 
     fn rot_z(angle: f32) -> Mat4f {
-        Mat4f { 
+        Mat4f {
             data: [
-                [angle.cos() , -angle.sin(), 0.0,  0.0],
+                [angle.cos(), -angle.sin(), 0.0, 0.0],
                 [angle.sin(), angle.cos(), 0.0, 0.0],
                 [0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 0.0, 1.0]
-            ]
+                [0.0, 0.0, 0.0, 1.0],
+            ],
         }
     }
     // --------------------------------------------------
-
 }
-
 
 impl ops::Mul<Vec4f> for Mat4f {
     type Output = Vec4f;
 
     fn mul(self, other: Vec4f) -> Vec4f {
-        Vec4f { 
-            x: self.data[0][0]*other.x + self.data[0][1]*other.y + self.data[0][2]*other.z + self.data[0][3]*other.w,
-            y: self.data[1][0]*other.x + self.data[1][1]*other.y + self.data[1][2]*other.z + self.data[1][3]*other.w,
-            z: self.data[2][0]*other.x + self.data[2][1]*other.y + self.data[2][2]*other.z + self.data[2][3]*other.w,
-            w: self.data[3][0]*other.x + self.data[3][1]*other.y + self.data[3][2]*other.z + self.data[3][3]*other.w,
+        Vec4f {
+            x: self.data[0][0] * other.x
+                + self.data[0][1] * other.y
+                + self.data[0][2] * other.z
+                + self.data[0][3] * other.w,
+            y: self.data[1][0] * other.x
+                + self.data[1][1] * other.y
+                + self.data[1][2] * other.z
+                + self.data[1][3] * other.w,
+            z: self.data[2][0] * other.x
+                + self.data[2][1] * other.y
+                + self.data[2][2] * other.z
+                + self.data[2][3] * other.w,
+            w: self.data[3][0] * other.x
+                + self.data[3][1] * other.y
+                + self.data[3][2] * other.z
+                + self.data[3][3] * other.w,
         }
     }
 }
@@ -144,7 +154,7 @@ impl ops::Mul<Mat4f> for Mat4f {
                 }
             }
         }
-        
+
         out
     }
 }
